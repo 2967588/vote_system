@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>无畏契约狂徒特效枪皮评级</title>
+    <style>
+        /* ===================== 全局样式 ===================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* 全局缩放核心样式 - 适配整体显示比例 */
+        body {
+            transform: scale(0.8);
+            transform-origin: 0 0;
+            width: 130%;
+            min-height: 130vh;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 兼容旧版Chrome缩放（现代浏览器可省略） */
+        @media screen and (-webkit-min-device-pixel-ratio: 0) {
+            body {
+                zoom: 0.8;
+            }
+        }
+
+        /* 页面基础样式 */
+        body {
+            font-family: 'Microsoft YaHei', 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #0f0e17 0%, #1a1a2e 50%, #16213e 100%);
+            background-attachment: fixed;
+            color: #fff;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 标题样式 */
+        h1 {
+            text-align: center;
+            font-size: 2.8em;
+            margin: 20px 0 8px 0;
+            background: linear-gradient(90deg, #ff4655, #ff8a00, #ff4655);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-shadow: 0 0 30px rgba(255, 70, 85, 0.3);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #b8b8d1;
+            margin-bottom: 20px;
+            font-size: 1.05em;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        /* ===================== 主内容区样式 ===================== */
+        .main-content {
+            display: flex;
+            gap: 0;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: auto;
+        }
+
+        /* 待选区样式 */
+        .waiting-area {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
+            border-left: 3px solid rgba(255, 138, 0, 0.4);
+            padding: 20px 18px;
+            width: 33.33%;
+            flex: 1;
+            height: auto;
+            display: flex;
+            flex-direction: column;
+            box-shadow: -8px 0 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            aspect-ratio: auto;
+            max-height: none;
+        }
+
+        .waiting-area h2 {
+            color: #fff;
+            margin-bottom: 16px;
+            font-size: 1.3em;
+            flex-shrink: 0;
+            font-weight: 600;
+            text-align: center;
+            background: linear-gradient(90deg, #ff8a00, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* 枪皮列表样式 */
+        .skin-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding-right: 8px;
+            align-content: flex-start;
+            justify-content: flex-start;
+        }
+
+        /* 枪皮列表滚动条样式 */
+        .skin-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .skin-list::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 3px;
+        }
+
+        .skin-list::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #ff4655, #ff8a00);
+            border-radius: 3px;
+        }
+
+        .skin-list::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #ff6675, #ffa520);
+        }
+
+        /* 枪皮卡片样式 */
+        .skin-card {
+            background: linear-gradient(135deg, #2d3561 0%, #1f2647 100%);
+            padding: 10px 14px;
+            border-radius: 10px;
+            cursor: grab;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            font-size: 0.85em;
+            user-select: none;
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            white-space: nowrap;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .skin-card-img {
+            width: 100%;
+            height: auto;
+            max-height: 75px;
+            object-fit: contain;
+            border-radius: 30px;
+            pointer-events: none;
+        }
+
+        /* 枪皮卡片交互样式 */
+        .skin-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 70, 85, 0.4);
+            border-color: rgba(255, 70, 85, 0.6);
+            background: linear-gradient(135deg, #353d6f 0%, #252b55 100%);
+        }
+
+        .skin-card:active {
+            transform: scale(0.98);
+        }
+
+        .skin-card.dragging {
+            opacity: 0.6;
+            cursor: grabbing;
+            transform: rotate(3deg);
+            position: relative;
+            z-index: 9999;
+        }
+
+        /* 评级区样式 */
+        .rating-area {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 66.67%;
+            flex: 2;
+            min-height: 200px;
+            height: auto;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        /* 评级盒子基础样式 */
+        .rating-box {
+            border-radius: 12px;
+            padding: 12px 20px;
+            flex: none;
+            height: auto;
+            min-height: 200px;
+            border: 3px solid;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .rating-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: inherit;
+            opacity: 0.1;
+            z-index: 0;
+        }
+
+        .rating-box > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 评级盒子拖放交互样式 */
+        .rating-box.drag-over {
+            transform: scale(1.02);
+            box-shadow: 0 0 30px currentColor, 0 8px 24px rgba(0, 0, 0, 0.4);
+            border-width: 4px;
+        }
+
+        .rating-box h3 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 8px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 2px 10px currentColor;
+            flex-shrink: 0;
+        }
+
+        /* 各评级盒子配色样式 */
+        .rating-box.s-tier {
+            border-color: #ff4655;
+            background: linear-gradient(135deg, rgba(255, 70, 85, 0.15) 0%, rgba(255, 70, 85, 0.05) 100%);
+        }
+
+        .rating-box.s-tier h3,
+        .rating-box.s-tier .skin-card {
+            color: #ff4655;
+            border-color: #ff4655;
+        }
+
+        .rating-box.a-tier {
+            border-color: #ffd700;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.15) 0%, rgba(255, 215, 0, 0.05) 100%);
+        }
+
+        .rating-box.a-tier h3,
+        .rating-box.a-tier .skin-card {
+            color: #ffd700;
+            border-color: #ffd700;
+        }
+
+        .rating-box.b-tier {
+            border-color: #a855f7;
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.15) 0%, rgba(168, 85, 247, 0.05) 100%);
+        }
+
+        .rating-box.b-tier h3,
+        .rating-box.b-tier .skin-card {
+            color: #a855f7;
+            border-color: #a855f7;
+        }
+
+        .rating-box.c-tier {
+            border-color: #3b82f6;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(59, 130, 246, 0.05) 100%);
+        }
+
+        .rating-box.c-tier h3,
+        .rating-box.c-tier .skin-card {
+            color: #3b82f6;
+            border-color: #3b82f6;
+        }
+
+        .rating-box.d-tier {
+            border-color: #10b981;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.05) 100%);
+        }
+
+        .rating-box.d-tier h3,
+        .rating-box.d-tier .skin-card {
+            color: #10b981;
+            border-color: #10b981;
+        }
+
+        /* 拖放区域样式 */
+        .drop-zone {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            min-height: auto;
+            align-content: flex-start;
+            flex: none;
+            overflow: hidden;
+            padding: 4px;
+            height: auto;
+            min-height: 80px;
+        }
+
+        /* 拖放区域滚动条样式（即使不显示） */
+        .drop-zone::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .drop-zone::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .drop-zone::-webkit-scrollbar-thumb {
+            background: currentColor;
+            opacity: 0.3;
+            border-radius: 2px;
+        }
+
+        .drop-zone .skin-card {
+            font-size: 0.8em;
+            padding: 8px 12px;
+            white-space: nowrap;
+        }
+
+        /* ===================== 按钮样式 ===================== */
+        .submit-btn {
+            display: block;
+            margin: 20px auto;
+            padding: 16px 60px;
+            font-size: 1.15em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ff4655 0%, #ff8a00 100%);
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 6px 20px rgba(255, 70, 85, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .submit-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 70, 85, 0.6);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .submit-btn:disabled {
+            background: linear-gradient(135deg, #555 0%, #444 100%);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 10px 25px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            color: #fff;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: #ff4655;
+        }
+
+        /* ===================== 消息提示样式 ===================== */
+        .message {
+            text-align: center;
+            padding: 16px 24px;
+            margin: 20px auto;
+            border-radius: 12px;
+            font-size: 1.05em;
+            max-width: 600px;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.error {
+            background: rgba(255, 70, 85, 0.25);
+            border: 2px solid #ff4655;
+            box-shadow: 0 4px 16px rgba(255, 70, 85, 0.3);
+        }
+
+        .message.success {
+            background: rgba(16, 185, 129, 0.25);
+            border: 2px solid #10b981;
+            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
+        }
+
+        /* ===================== 排名页面样式 ===================== */
+        .ranking-page {
+            display: none;
+        }
+
+        .ranking-page.active {
+            display: block;
+        }
+
+        .ranking-list {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .ranking-item {
+            position: relative;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            border-left: 5px solid #ff4655;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            background: linear-gradient(135deg, #2d3561 0%, #1f2647 100%);
+            /* CSS变量承载背景图，补充背景基础属性 */
+            background-image: var(--bg-image, none);
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .ranking-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            /* 替换inherit为CSS变量，确保背景图正确读取 */
+            background-image: var(--bg-image, none);
+            background-size: cover;
+            background-position: center;
+            /* 补充背景重复属性，避免图裂 */
+            background-repeat: no-repeat;
+            filter: blur(0.1px) brightness(0.9);
+            z-index: 0;
+            opacity: 0.7;
+        }
+
+        .ranking-item::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                rgba(45, 53, 97, 0.85) 0%, 
+                rgba(31, 38, 71, 0.9) 100%);
+            z-index: 1;
+        }
+
+        .ranking-item > * {
+            position: relative;
+            z-index: 2;
+        }
+
+        .ranking-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(255, 70, 85, 0.3);
+        }
+
+        .ranking-item .rank {
+            font-size: 2em;
+            font-weight: bold;
+            color: #ffd700;
+            display: inline-block;
+            width: 60px;
+        }
+
+        .ranking-item .skin-name {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .ranking-item .total-score {
+            font-size: 1.5em;
+            color: #ff4655;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .rating-stats {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .stat-item {
+            padding: 5px 12px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .stat-s { background: rgba(255, 70, 85, 0.2); color: #ff4655; }
+        .stat-a { background: rgba(255, 215, 0, 0.2); color: #ffd700; }
+        .stat-b { background: rgba(168, 85, 247, 0.2); color: #a855f7; }
+        .stat-c { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
+        .stat-d { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+
+        /* ===================== 响应式样式 ===================== */
+        @media (max-width: 1200px) {
+            .main-content {
+                flex-direction: column;
+                height: auto;
+                min-height: auto;
+            }
+
+            .rating-area {
+                width: 100%;
+                height: auto;
+                min-height: auto;
+            }
+
+            .waiting-area {
+                width: 100%;
+                height: auto;
+                aspect-ratio: auto;
+                max-height: none;
+                border-left: none;
+                border-top: 3px solid rgba(255, 138, 0, 0.4);
+            }
+
+            .rating-box {
+                min-height: auto;
+            }
+
+            .skin-list {
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 0;
+            }
+
+            h1 {
+                font-size: 2em;
+                margin: 15px 0 5px 0;
+            }
+
+            .subtitle {
+                font-size: 0.95em;
+                margin-bottom: 15px;
+            }
+
+            .main-content {
+                height: auto;
+            }
+
+            .rating-area {
+                width: 100%;
+                padding: 10px;
+                min-height: auto;
+            }
+
+            .rating-box {
+                padding: 10px 15px;
+            }
+
+            .rating-box h3 {
+                font-size: 1.6em;
+            }
+
+            .waiting-area {
+                width: 100%;
+                height: auto;
+                padding: 15px 12px;
+            }
+
+            .skin-list {
+                gap: 8px;
+            }
+
+            .skin-card {
+                font-size: 0.8em;
+                padding: 9px 12px;
+            }
+
+            .submit-btn {
+                padding: 14px 40px;
+                font-size: 1em;
+                margin: 15px auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 评级页面 -->
+        <div id="ratingPage">
+            <h1>🎮 无畏契约狂徒特效枪皮评级</h1>
+            <p class="subtitle">拖拽枪皮到对应等级完成评级</p>
+
+            <div id="messageBox"></div>
+
+            <!-- 主内容区 -->
+            <div class="main-content">
+                <!-- 评级选择区 -->
+                <div class="rating-area">
+                    <div class="rating-box s-tier" data-tier="S">
+                        <h3>S</h3>
+                        <div class="drop-zone" data-tier="S"></div>
+                    </div>
+                    <div class="rating-box a-tier" data-tier="A">
+                        <h3>A</h3>
+                        <div class="drop-zone" data-tier="A"></div>
+                    </div>
+                    <div class="rating-box b-tier" data-tier="B">
+                        <h3>B</h3>
+                        <div class="drop-zone" data-tier="B"></div>
+                    </div>
+                    <div class="rating-box c-tier" data-tier="C">
+                        <h3>C</h3>
+                        <div class="drop-zone" data-tier="C"></div>
+                    </div>
+                    <div class="rating-box d-tier" data-tier="D">
+                        <h3>D</h3>
+                        <div class="drop-zone" data-tier="D"></div>
+                    </div>
+                </div>
+
+                <!-- 待选区 -->
+                <div class="waiting-area">
+                    <h2>📦 待选区</h2>
+                    <div class="skin-list" id="waitingArea"></div>
+                </div>
+            </div>
+
+            <button class="submit-btn" id="submitBtn">提交评级</button>
+        </div>
+
+        <!-- 排名页面 -->
+        <div id="rankingPage" class="ranking-page">
+            <h1>🏆 全网枪皮评级排行榜 TOP 10</h1>
+            <p class="subtitle">基于全体玩家评级数据统计</p>
+            
+            <a href="#" class="back-btn" id="backBtn">← 返回评级页面</a>
+            
+            <div class="ranking-list" id="rankingList"></div>
+        </div>
+    </div>
+
+    <script>
+        /**************************
+         * 常量定义区 - 基础配置数据
+         **************************/
+        // 枪皮名称列表
+        const SKINS = [
+            "RGX 11z Pro", "掠影", "盖亚的复仇", "紫阙金琅", "ORA x 颗秒",
+            "艾沃莉的梦之翼", "超时空卫队", "上古龙炎", "2021 全球冠军赛", "2023 全球冠军赛",
+            "2025 全球冠军赛", "创・纪元", "多弥尔的复仇", "光明哨兵", "光荣异象",
+            "归零者", "洪荒怒焰", "混沌序曲", "机动狂飙", "奇点 //2.0",
+            "千灵华绽 //2.0", "噬影者", "双城之战", "塑水宗", "全息波普 //2.0",
+            "虚空遗迹", "偃月苍龙", "滋滋 X 特工队", "般若假面 //2.0", "冰点凝冻",
+            "堕天遗武", "盖世英雄", "海洋之星", "离子武器 //2.0", "日冕雄狮",
+            "奇幻朋克 //3.0", "起源", "耀鳞威龙"
+        ];
+
+        // 枪皮图片路径映射（用占位图，可自行替换为真实图片）
+        const SKIN_IMAGE_MAP = {
+            "RGX 11z Pro": "https://via.placeholder.com/120x150/2d3561/ffffff?text=RGX+11z+Pro",
+            "掠影": "https://via.placeholder.com/120x150/2d3561/ffffff?text=掠影",
+            "盖亚的复仇": "https://via.placeholder.com/120x150/2d3561/ffffff?text=盖亚的复仇",
+            "紫阙金琅": "https://via.placeholder.com/120x150/2d3561/ffffff?text=紫阙金琅",
+            "ORA x 颗秒": "https://via.placeholder.com/120x150/2d3561/ffffff?text=ORA+x+颗秒",
+            "艾沃莉的梦之翼": "https://via.placeholder.com/120x150/2d3561/ffffff?text=艾沃莉的梦之翼",
+            "超时空卫队": "https://via.placeholder.com/120x150/2d3561/ffffff?text=超时空卫队",
+            "上古龙炎": "https://via.placeholder.com/120x150/2d3561/ffffff?text=上古龙炎",
+            "2021 全球冠军赛": "https://via.placeholder.com/120x150/2d3561/ffffff?text=2021全球冠军赛",
+            "2023 全球冠军赛": "https://via.placeholder.com/120x150/2d3561/ffffff?text=2023全球冠军赛",
+            "2025 全球冠军赛": "https://via.placeholder.com/120x150/2d3561/ffffff?text=2025全球冠军赛",
+            "创・纪元": "https://via.placeholder.com/120x150/2d3561/ffffff?text=创・纪元",
+            "多弥尔的复仇": "https://via.placeholder.com/120x150/2d3561/ffffff?text=多弥尔的复仇",
+            "光明哨兵": "https://via.placeholder.com/120x150/2d3561/ffffff?text=光明哨兵",
+            "光荣异象": "https://via.placeholder.com/120x150/2d3561/ffffff?text=光荣异象",
+            "归零者": "https://via.placeholder.com/120x150/2d3561/ffffff?text=归零者",
+            "洪荒怒焰": "https://via.placeholder.com/120x150/2d3561/ffffff?text=洪荒怒焰",
+            "混沌序曲": "https://via.placeholder.com/120x150/2d3561/ffffff?text=混沌序曲",
+            "机动狂飙": "https://via.placeholder.com/120x150/2d3561/ffffff?text=机动狂飙",
+            "奇点 //2.0": "https://via.placeholder.com/120x150/2d3561/ffffff?text=奇点//2.0",
+            "千灵华绽 //2.0": "https://via.placeholder.com/120x150/2d3561/ffffff?text=千灵华绽//2.0",
+            "噬影者": "https://via.placeholder.com/120x150/2d3561/ffffff?text=噬影者",
+            "双城之战": "https://via.placeholder.com/120x150/2d3561/ffffff?text=双城之战",
+            "塑水宗": "https://via.placeholder.com/120x150/2d3561/ffffff?text=塑水宗",
+            "全息波普 //2.0": "https://via.placeholder.com/120x150/2d3561/ffffff?text=全息波普//2.0",
+            "虚空遗迹": "https://via.placeholder.com/120x150/2d3561/ffffff?text=虚空遗迹",
+            "偃月苍龙": "https://via.placeholder.com/120x150/2d3561/ffffff?text=偃月苍龙",
+            "滋滋 X 特工队": "https://via.placeholder.com/120x150/2d3561/ffffff?text=滋滋X特工队",
+            "般若假面 //2.0": "https://via.placeholder.com/120x150/2d3561/ffffff?text=般若假面//2.0",
+            "冰点凝冻": "https://via.placeholder.com/120x150/2d3561/ffffff?text=冰点凝冻",
+            "堕天遗武": "https://via.placeholder.com/120x150/2d3561/ffffff?text=堕天遗武",
+            "盖世英雄": "https://via.placeholder.com/120x150/2d3561/ffffff?text=盖世英雄",
+            "海洋之星": "https://via.placeholder.com/120x150/2d3561/ffffff?text=海洋之星",
+            "离子武器 //2.0": "https://via.placeholder.com/120x150/2d3561/ffffff?text=离子武器//2.0",
+            "日冕雄狮": "https://via.placeholder.com/120x150/2d3561/ffffff?text=日冕雄狮",
+            "奇幻朋克 //3.0": "https://via.placeholder.com/120x150/2d3561/ffffff?text=奇幻朋克//3.0",
+            "起源": "https://via.placeholder.com/120x150/2d3561/ffffff?text=起源",
+            "耀鳞威龙": "https://via.placeholder.com/120x150/2d3561/ffffff?text=耀鳞威龙"
+        };
+
+        // 排名项背景图片路径映射（用占位图）
+        const RANKING_BACKGROUND_MAP = {
+            default: "https://via.placeholder.com/800x200/1f2647/ffffff?text=背景",
+            "RGX 11z Pro": "https://via.placeholder.com/800x200/1f2647/ffffff?text=RGX+11z+Pro",
+            "掠影": "https://via.placeholder.com/800x200/1f2647/ffffff?text=掠影",
+            "盖亚的复仇": "https://via.placeholder.com/800x200/1f2647/ffffff?text=盖亚的复仇",
+            "紫阙金琅": "https://via.placeholder.com/800x200/1f2647/ffffff?text=紫阙金琅",
+            "ORA x 颗秒": "https://via.placeholder.com/800x200/1f2647/ffffff?text=ORA+x+颗秒",
+            "艾沃莉的梦之翼": "https://via.placeholder.com/800x200/1f2647/ffffff?text=艾沃莉的梦之翼",
+            "超时空卫队": "https://via.placeholder.com/800x200/1f2647/ffffff?text=超时空卫队",
+            "上古龙炎": "https://via.placeholder.com/800x200/1f2647/ffffff?text=上古龙炎",
+            "2021 全球冠军赛": "https://via.placeholder.com/800x200/1f2647/ffffff?text=2021全球冠军赛",
+            "2023 全球冠军赛": "https://via.placeholder.com/800x200/1f2647/ffffff?text=2023全球冠军赛",
+            "2025 全球冠军赛": "https://via.placeholder.com/800x200/1f2647/ffffff?text=2025全球冠军赛",
+            "创・纪元": "https://via.placeholder.com/800x200/1f2647/ffffff?text=创・纪元",
+            "多弥尔的复仇": "https://via.placeholder.com/800x200/1f2647/ffffff?text=多弥尔的复仇",
+            "光明哨兵": "https://via.placeholder.com/800x200/1f2647/ffffff?text=光明哨兵",
+            "光荣异象": "https://via.placeholder.com/800x200/1f2647/ffffff?text=光荣异象",
+            "归零者": "https://via.placeholder.com/800x200/1f2647/ffffff?text=归零者",
+            "洪荒怒焰": "https://via.placeholder.com/800x200/1f2647/ffffff?text=洪荒怒焰",
+            "混沌序曲": "https://via.placeholder.com/800x200/1f2647/ffffff?text=混沌序曲",
+            "机动狂飙": "https://via.placeholder.com/800x200/1f2647/ffffff?text=机动狂飙",
+            "奇点 //2.0": "https://via.placeholder.com/800x200/1f2647/ffffff?text=奇点//2.0",
+            "千灵华绽 //2.0": "https://via.placeholder.com/800x200/1f2647/ffffff?text=千灵华绽//2.0",
+            "噬影者": "https://via.placeholder.com/800x200/1f2647/ffffff?text=噬影者",
+            "双城之战": "https://via.placeholder.com/800x200/1f2647/ffffff?text=双城之战",
+            "塑水宗": "https://via.placeholder.com/800x200/1f2647/ffffff?text=塑水宗",
+            "全息波普 //2.0": "https://via.placeholder.com/800x200/1f2647/ffffff?text=全息波普//2.0",
+            "虚空遗迹": "https://via.placeholder.com/800x200/1f2647/ffffff?text=虚空遗迹",
+            "偃月苍龙": "https://via.placeholder.com/800x200/1f2647/ffffff?text=偃月苍龙",
+            "滋滋 X 特工队": "https://via.placeholder.com/800x200/1f2647/ffffff?text=滋滋X特工队",
+            "般若假面 //2.0": "https://via.placeholder.com/800x200/1f2647/ffffff?text=般若假面//2.0",
+            "冰点凝冻": "https://via.placeholder.com/800x200/1f2647/ffffff?text=冰点凝冻",
+            "堕天遗武": "https://via.placeholder.com/800x200/1f2647/ffffff?text=堕天遗武",
+            "盖世英雄": "https://via.placeholder.com/800x200/1f2647/ffffff?text=盖世英雄",
+            "海洋之星": "https://via.placeholder.com/800x200/1f2647/ffffff?text=海洋之星",
+            "离子武器 //2.0": "https://via.placeholder.com/800x200/1f2647/ffffff?text=离子武器//2.0",
+            "日冕雄狮": "https://via.placeholder.com/800x200/1f2647/ffffff?text=日冕雄狮",
+            "奇幻朋克 //3.0": "https://via.placeholder.com/800x200/1f2647/ffffff?text=奇幻朋克//3.0",
+            "起源": "https://via.placeholder.com/800x200/1f2647/ffffff?text=起源",
+            "耀鳞威龙": "https://via.placeholder.com/800x200/1f2647/ffffff?text=耀鳞威龙"
+        };
+
+        /**************************
+         * 全局变量区 - 状态管理
+         **************************/
+        // 当前拖拽的元素
+        let draggedElement = null;
+        // 是否已提交评级
+        let hasSubmitted = false;
+
+        /**************************
+         * 工具函数区 - 通用功能
+         **************************/
+        /**
+         * 显示消息提示框
+         * @param {string} text - 提示文本
+         * @param {string} type - 提示类型（error/success）
+         */
+        function showMessage(text, type) {
+            const messageBox = document.getElementById('messageBox');
+            messageBox.innerHTML = `<div class="message ${type}">${text}</div>`;
+            setTimeout(() => {
+                messageBox.innerHTML = '';
+            }, 5000);
+        }
+
+        /**
+         * 初始化待选区枪皮列表
+         */
+        function initWaitingArea() {
+            const waitingArea = document.getElementById('waitingArea');
+            waitingArea.innerHTML = '';
+            
+            SKINS.forEach(skin => {
+                const card = createSkinCard(skin);
+                waitingArea.appendChild(card);
+            });
+        }
+
+        /**
+         * 创建枪皮卡片元素
+         * @param {string} skinName - 枪皮名称
+         * @returns {HTMLElement} 枪皮卡片DOM元素
+         */
+        function createSkinCard(skinName) {
+            const card = document.createElement('div');
+            card.className = 'skin-card';
+            card.draggable = !hasSubmitted;
+            card.dataset.skin = skinName;
+            
+            // 枪皮图片（占位图）
+            const img = document.createElement('img');
+            img.src = SKIN_IMAGE_MAP[skinName] || 'https://via.placeholder.com/120x150/2d3561/ffffff?text=默认';
+            img.style.width = '120px';
+            img.style.height = '150px';
+            img.style.objectFit = 'cover';
+            img.alt = skinName;
+            img.className = 'skin-card-img';
+
+            // 枪皮名称文本
+            const text = document.createElement('span');
+            text.textContent = skinName;
+
+            // 组装卡片
+            card.appendChild(img);
+            card.appendChild(text);
+
+            // 绑定拖拽事件
+            card.addEventListener('dragstart', handleDragStart);
+            card.addEventListener('dragend', handleDragEnd);
+
+            return card;
+        }
+
+        /**
+         * 禁用所有枪皮卡片的拖拽功能
+         */
+        function disableDragging() {
+            document.querySelectorAll('.skin-card').forEach(card => {
+                card.draggable = false;
+                card.style.cursor = 'not-allowed';
+            });
+        }
+
+        /**
+         * 收集用户的评级数据
+         * @returns {Object} 评级数据 { 枪皮名称: 评级等级 }
+         */
+        function collectRatings() {
+            const ratings = {};
+            
+            document.querySelectorAll('.drop-zone').forEach(zone => {
+                const tier = zone.dataset.tier;
+                const skins = Array.from(zone.querySelectorAll('.skin-card')).map(card => card.dataset.skin);
+                
+                skins.forEach(skin => {
+                    ratings[skin] = tier;
+                });
+            });
+
+            // 检查是否所有枪皮都已评级
+            const unratedSkins = SKINS.filter(skin => !Object.keys(ratings).includes(skin));
+            if (unratedSkins.length > 0) {
+                showMessage(`还有 ${unratedSkins.length} 个枪皮未评级，请全部拖拽到对应等级！`, 'error');
+                return null;
+            }
+
+            return ratings;
+        }
+
+        /**
+         * 提交评级数据到后端
+         */
+        async function submitRatings() {
+            // 1. 禁止重复提交
+            if (hasSubmitted) {
+                showMessage('您已提交过评级，无法重复提交！', 'error');
+                return;
+            }
+
+            // 2. 收集评级数据
+            const ratings = collectRatings();
+            if (!ratings) return;
+
+            try {
+                // 3. 调用后端接口提交数据
+                const response = await fetch('/api/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(ratings)
+                });
+
+                const result = await response.json();
+
+                // 4. 处理提交结果
+                if (result.success) {
+                    showMessage(result.msg, 'success');
+                    hasSubmitted = true;
+                    disableDragging();
+                    document.getElementById('submitBtn').disabled = true;
+                    
+                    // 提交成功后自动跳转到排行榜
+                    setTimeout(() => {
+                        switchToRankingPage();
+                    }, 2000);
+                } else {
+                    showMessage(result.msg || '提交失败，请重试！', 'error');
+                }
+            } catch (err) {
+                console.error('提交失败：', err);
+                showMessage('网络错误，提交失败！', 'error');
+            }
+        }
+
+        /**
+         * 从后端获取排行榜数据并展示
+         */
+        async function loadRankings() {
+            try {
+                const response = await fetch('/api/rankings');
+                const result = await response.json();
+
+                if (result.success) {
+                    displayRankings(result.data);
+                } else {
+                    showMessage(result.msg || '获取排行榜失败！', 'error');
+                }
+            } catch (err) {
+                console.error('获取排行榜失败：', err);
+                showMessage('网络错误，无法加载排行榜！', 'error');
+            }
+        }
+
+        /**
+         * 显示排名数据到页面
+         * @param {Array} rankings - 后端返回的排行榜数据
+         */
+        function displayRankings(rankings) {
+            const rankingList = document.getElementById('rankingList');
+            rankingList.innerHTML = '';
+
+            // 无数据时提示
+            if (!rankings || rankings.length === 0) {
+                rankingList.innerHTML = '<p style="text-align: center; color: #aaa;">暂无评级数据</p>';
+                return;
+            }
+
+            // 渲染排名项
+            rankings.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'ranking-item';
+                // 获取背景图路径（优先枪皮专属，无则用默认）
+                const bgImageUrl = RANKING_BACKGROUND_MAP[item.skin] || RANKING_BACKGROUND_MAP.default;
+                // 用CSS变量设置背景图
+                div.style.setProperty('--bg-image', `url('${bgImageUrl}')`);
+                
+                div.innerHTML = `
+                    <span class="rank">#${index + 1}</span>
+                    <div style="display: inline-block; vertical-align: top; width: calc(100% - 80px);">
+                        <div class="skin-name">${item.skin}</div>
+                        <div class="total-score">总分: ${item.totalScore}</div>
+                        <div class="rating-stats">
+                            <span class="stat-item stat-s">S级: ${item.stats.S || 0}</span>
+                            <span class="stat-item stat-a">A级: ${item.stats.A || 0}</span>
+                            <span class="stat-item stat-b">B级: ${item.stats.B || 0}</span>
+                            <span class="stat-item stat-c">C级: ${item.stats.C || 0}</span>
+                            <span class="stat-item stat-d">D级: ${item.stats.D || 0}</span>
+                        </div>
+                    </div>
+                `;
+                rankingList.appendChild(div);
+            });
+        }
+
+        /**
+         * 切换到排行榜页面
+         */
+        function switchToRankingPage() {
+            document.getElementById('ratingPage').style.display = 'none';
+            document.getElementById('rankingPage').classList.add('active');
+            // 加载排行榜数据
+            loadRankings();
+        }
+
+        /**
+         * 切换回评级页面
+         */
+        function switchToRatingPage() {
+            document.getElementById('rankingPage').classList.remove('active');
+            document.getElementById('ratingPage').style.display = 'block';
+        }
+
+        /**************************
+         * 拖拽事件处理区 - 核心交互
+         **************************/
+        /**
+         * 处理拖拽开始事件
+         * @param {DragEvent} e - 拖拽事件对象
+         */
+        function handleDragStart(e) {
+            if (hasSubmitted) {
+                e.preventDefault();
+                return;
+            }
+            draggedElement = this;
+            this.classList.add('dragging');
+            e.dataTransfer.setData('text/plain', this.dataset.skin);
+            e.dataTransfer.effectAllowed = 'move';
+        }
+
+        /**
+         * 处理拖拽结束事件
+         * @param {DragEvent} e - 拖拽事件对象
+         */
+        function handleDragEnd(e) {
+            this.classList.remove('dragging');
+            draggedElement = null;
+            // 移除所有拖放区域的高亮
+            document.querySelectorAll('.rating-box').forEach(box => {
+                box.classList.remove('drag-over');
+            });
+        }
+
+        /**
+         * 处理拖放区域的拖拽进入事件
+         * @param {DragEvent} e - 拖拽事件对象
+         */
+        function handleDragOver(e) {
+            e.preventDefault(); // 允许放置
+            const dropZone = e.target.closest('.drop-zone');
+            if (dropZone && !hasSubmitted) {
+                const ratingBox = dropZone.closest('.rating-box');
+                ratingBox.classList.add('drag-over');
+            }
+        }
+
+        /**
+         * 处理拖放区域的拖拽离开事件
+         * @param {DragEvent} e - 拖拽事件对象
+         */
+        function handleDragLeave(e) {
+            const dropZone = e.target.closest('.drop-zone');
+            if (dropZone) {
+                const ratingBox = dropZone.closest('.rating-box');
+                // 确保鼠标真的离开区域才移除高亮
+                const relatedTarget = e.relatedTarget;
+                if (!ratingBox.contains(relatedTarget)) {
+                    ratingBox.classList.remove('drag-over');
+                }
+            }
+        }
+
+        /**
+         * 处理拖放区域的放置事件
+         * @param {DragEvent} e - 拖拽事件对象
+         */
+        function handleDrop(e) {
+            e.preventDefault();
+            if (hasSubmitted || !draggedElement) return;
+
+            const dropZone = e.target.closest('.drop-zone');
+            if (dropZone) {
+                // 移除拖放区域高亮
+                const ratingBox = dropZone.closest('.rating-box');
+                ratingBox.classList.remove('drag-over');
+                
+                // 把拖拽的卡片添加到当前拖放区域
+                dropZone.appendChild(draggedElement);
+                // 重置卡片样式
+                draggedElement.classList.remove('dragging');
+            }
+        }
+
+        /**************************
+         * 页面初始化 - 入口函数
+         **************************/
+        function initPage() {
+            // 1. 初始化待选区枪皮
+            initWaitingArea();
+
+            // 2. 绑定拖放区域事件
+            document.querySelectorAll('.drop-zone').forEach(zone => {
+                zone.addEventListener('dragover', handleDragOver);
+                zone.addEventListener('dragleave', handleDragLeave);
+                zone.addEventListener('drop', handleDrop);
+            });
+
+            // 3. 绑定提交按钮事件
+            document.getElementById('submitBtn').addEventListener('click', submitRatings);
+
+            // 4. 绑定返回按钮事件
+            document.getElementById('backBtn').addEventListener('click', (e) => {
+                e.preventDefault();
+                switchToRatingPage();
+            });
+        }
+
+        // 页面加载完成后初始化
+        window.addEventListener('DOMContentLoaded', initPage);
+    </script>
+</body>
+</html>
